@@ -13,7 +13,7 @@
 	return $dbconn;
 	}
 
-	nextval('md_coff_id_caisses_seq'::regclass)
+	
   
 	//Encaissement
 	Function ajout_encaiss($date_op,$num_op,$num_piece,$libelle,$encaissement,$nmois,$id_user){
@@ -70,7 +70,7 @@
 		//Suppression Encaissement
 		Function deleteEnc(){
 			
-			$sql="DELETE FROM PUBLIC.".$this->table_name." WHERE id_caisse='".$this->cleanData($_POST['id_caisse'])."'";
+			$sql='DELETE FROM PUBLIC.md_caisse WHERE id_caisse='.cleanData($_POST['id_caisse']);
 			return pg_query($sql);
 			
 		}
@@ -128,7 +128,7 @@
 		// User 
 		Function xamer($data=array()){
 			
-			$sql="SELECT * FROM PUBLIC.md_user WHERE login='".$this->cleanData($_POST['login'])."' AND mdp='".$this->cleanData($_POST['mdp'])."'";
+			$sql="SELECT * FROM PUBLIC.md_user WHERE login='".cleanData($_POST['login'])."' AND mdp='".cleanData($_POST['mdp'])."'";
 			$conf=config();
 			$result = pg_query($conf, $sql);
 			if(!$result){
