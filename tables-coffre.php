@@ -259,13 +259,12 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
                                                 <thead>
                                                     <tr>
 														<th>Date</th>
-                                                        <th>N°OP</th>
-                                                        <th>N°Pièce</th>
-                                                        <th>Libellé</th>
+                                                        <th>N° Bon </th>                                       
+                                                        <th>Désignation</th>
                                                         <th>Approvisionnement</th>
                                                         <th>Versement</th>
 														<th>Solde</th>
-														<th>Saisie par</th>
+														<th>Bénéficiaire</th>
 														<th>Action</th>
                                                     </tr>
                                                 </thead>
@@ -276,10 +275,10 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
 												
 													
 													if(isset($_POST['search'])){
-														$sql = "SELECT * FROM public.md_coffre WHERE etat=TRUE AND date_op BETWEEN '$dateDeb' AND '$dateFin' ORDER BY  num_op ASC";
+														$sql = "SELECT * FROM public.md_coffre WHERE etat=TRUE AND date_op BETWEEN '$dateDeb' AND '$dateFin' ORDER BY  num_bon ASC";
 													} else
 													{
-														$sql = "SELECT * FROM public.md_coffre WHERE etat=TRUE AND date_op BETWEEN '". $_SESSION['dateDeb'] ."' AND '". $_SESSION['dateFin']."' ORDER BY  num_op ASC";			
+														$sql = "SELECT * FROM public.md_coffre WHERE etat=TRUE AND date_op BETWEEN '". $_SESSION['dateDeb'] ."' AND '". $_SESSION['dateFin']."' ORDER BY  num_bon ASC";			
 													}			
 												
 												//	echo 'Post date '.$_SESSION['dateDeb'].'<br>';
@@ -299,14 +298,14 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
 								
 														$vend=date_outil($dateDeb,3);
 														//echo $vend.'<br>';
-														$sql_ran="SELECT * FROM md_ran WHERE date_ran='$vend' LIMIT 1";
+														$sql_ranc="SELECT * FROM md_rancoffre WHERE date_ranc='$vend' LIMIT 1";
 														//echo $sql_ran;
 														$conn=config();
-														$resultat=pg_query($conn,$sql_ran);
+														$resultat=pg_query($conn,$sql_ranc);
 														while($row_r=pg_fetch_array($resultat))
 														{
-															$_SESSION['ran']=$row_r['montant_ran'];
-															$solde_ouv=$_SESSION['ran'];
+															$_SESSION['ranc']=$row_r['montant_ranc'];
+															$solde_ouv=$_SESSION['ranc'];
 															//echo $solde_ouv;
 														}
 														break;		
@@ -315,14 +314,14 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
 									
 														$vend=date_outil($dateDeb,1);
 
-														$sql_ran="SELECT * FROM md_ran order by id_ran DESC LIMIT 1";
+														$sql_ran="SELECT * FROM md_rancoffre order by id_ranc DESC LIMIT 1";
 													//	echo $sql_ran.'<br>';
 														$conn=config();
 														$resultat=pg_query($conn,$sql_ran);
 														while($row_r=pg_fetch_array($resultat))
 														{
-															$_SESSION['ran']=$row_r['montant_ran'];
-															$solde_ouv=$_SESSION['ran'];
+															$_SESSION['ran']=$row_r['montant_ranc'];
+															$solde_ouvc=$_SESSION['ranc'];
 															$date1=explode("/", $_POST['to']);
 															$dateDeb0=$date1[2].'-'.$date1[0].'-'.$date1[1];
 															$_SESSION['dateDeb']=$dateDeb0;
@@ -338,7 +337,7 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
 														echo '<td></td>';
 														echo '<td></td>';
 														echo '<td>SOLDE D\'OUVERTURE</td>';
-														echo '<td>'.(number_format($solde_ouv,0,'',' ')).'F CFA </td>';
+														echo '<td>'.(number_format($solde_ouvc,0,'',' ')).'F CFA </td>';
 														echo '<td></td>';
 														echo '<td></td>';
 														echo '<td></td>';
@@ -351,7 +350,8 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
 														$datefin1=$date1[2].'-'.$date2[0].'-'.$date2[1];
 														$_SESSION['dateFin']=$datefin1;
 														
-                                                    while ($row = $resultset->fetch(PDO::FETCH_ASSOC)) {
+                                                    while ($row = $resultset->fetch(PDO::FETCH_ASSOC))
+														{
 														// traitement date
 														$datersd=explode("-", $row['date_op']);
 													
@@ -368,47 +368,64 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
                                                         <td><?echo $row['libelle'];?></td>	
 														
 														<? //echo 'Montant ='.$row['encaissement'];
-															if ( $ncp == 1){ // 1ere ligne
+															if ( $ncp == 1)
+																{ // 1ere ligne
 																echo '<td>'.(number_format($row['encaissement'],0,'',' ')).'F CFA </td>';
-																echo '<td>'.(number_format($row['decaissement'],0,'',' ')).'F CFA</td>';}
+																echo '<td>'.(number_format($row['decaissement'],0,'',' ')).'F CFA</td>';
+																}
 															else
-															{ // test encaissement
-																if($row['encaissement']==0){	
-																	echo '<td></td>';} 
-																else {
-																echo '<td>'.(number_format($row['encaissement'],0,'',' ')).'F CFA </td>';}
-																if ($row['decaissement']==0){
-																	echo '<td></td>';} 
-																else {
-																echo '<td>'.(number_format($row['decaissement'],0,'',' ')).'F CFA</td>';}	
-														}?>
-														<? if ($ncp == 1){ $solde=($solde_ouv+$row['encaissement'])-$row['decaissement']; 
-														//echo 'solde primaire : '.$solde;
-														echo '<td>'.(number_format(($solde_ouv+$row['encaissement'])-$row['decaissement'],0,'',' ')).'F CFA </td>';}
-														else {
+																{ // test encaissement
+																	if($row['encaissement']==0)
+																		{	
+																		echo '<td></td>';
+																		} 
+																	else 
+																		{
+																	echo '<td>'.(number_format($row['encaissement'],0,'',' ')).'F CFA </td>';
+																		}
+																	if ($row['decaissement']==0)
+																		{
+																		echo '<td></td>';
+																		} 
+																	else 
+																		{
+																	echo '<td>'.(number_format($row['decaissement'],0,'',' ')).'F CFA</td>';
+																		}	
+																}
+														?>
+														<? if ($ncp == 1)
+															{ $solde=($solde_ouv+$row['encaissement'])-$row['decaissement']; 
+															//echo 'solde primaire : '.$solde;
+															echo '<td>'.(number_format(($solde_ouv+$row['encaissement'])-$row['decaissement'],0,'',' ')).'F CFA </td>';
+															}
+															else 
+															{
 															 ($solde=($solde+$row['encaissement'])-$row['decaissement']);
-														//	 echo 'Solde secondaire'.$solde;
-														echo '<td>'.(number_format($solde,0,'',' ')).'F CFA </td>';}	
+															//	 echo 'Solde secondaire'.$solde;
+															echo '<td>'.(number_format($solde,0,'',' ')).'F CFA </td>';
+															}	
 														require_once 'db_class.php';
 														$per=nom_utilisat($row['id_user']);
 														$rowp = pg_fetch_row($per);
 														echo '<td>'.$rowp[0].'</td>' ?>
                                                         <td>
 														<? 
-														switch ($_SESSION['Profileur']){
+														switch ($_SESSION['Profileur'])
+															{
 															case 'ADMINISTRATEUR':
 															
-															echo '<a href="form_encaisse.php?id='.$row['id_caisse'].'" data-toggle="tooltip" data-placement="right" title="" data-original-title="Modifier une opération" class="btn btn-icon btn-xs btn-outline-success"><i class="fa fa-edit"></i></a>&nbsp;
-														<a href="form_cancel.php?id='.$row['id_caisse'].'" data-toggle="tooltip" data-placement="right" title="" data-original-title="Annuler une opération" class="btn btn-icon btn-xs btn-outline-danger" aria-label=""><i class="fa fa-trash"></i></a>';
+															echo '<a href="form_encaisse.php?id='.$row['id_coffre'].'" data-toggle="tooltip" data-placement="right" title="" data-original-title="Modifier une opération" class="btn btn-icon btn-xs btn-outline-success"><i class="fa fa-edit"></i></a>&nbsp;
+														<a href="form_cancel.php?id='.$row['id_coffre'].'" data-toggle="tooltip" data-placement="right" title="" data-original-title="Annuler une opération" class="btn btn-icon btn-xs btn-outline-danger" aria-label=""><i class="fa fa-trash"></i></a>';
 														
 															break;
 															default :
-															if($row['cloture'] == FALSE){
+															if($row['cloture'] == FALSE)
+															{
 															echo '<a href="form_encaisse.php?id='.$row['id_caisse'].'" data-toggle="tooltip" data-placement="right" title="" data-original-title="Modifier une opération" class="btn btn-icon btn-xs btn-outline-success"><i class="fa fa-edit"></i></a>&nbsp;
-															<a href="form_cancel.php?id='.$row['id_caisse'].'" data-toggle="tooltip" data-placement="right" title="" data-original-title="Annuler une opération" class="btn btn-icon btn-xs btn-outline-danger"><i class="fa fa-trash"></i></a>';}
+															<a href="form_cancel.php?id='.$row['id_caisse'].'" data-toggle="tooltip" data-placement="right" title="" data-original-title="Annuler une opération" class="btn btn-icon btn-xs btn-outline-danger"><i class="fa fa-trash"></i></a>';
+															}
 															break;
-															
-														}
+															}
 													?>
 														</td>							
                                                     </tr>
@@ -446,13 +463,12 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
                                                 <tfoot>
                                                     <tr>
                                                         <th>Date</th>
-                                                        <th>N°OP</th>
-                                                        <th>N°Pièce</th>
-                                                        <th>Libellé</th>
+                                                        <th>N°Bon</th>
+                                                        <th>Désignation</th>                                                        
                                                         <th>Approvisionnement</th>
                                                         <th>Versement</th>
 														<th></th>
-														<th>Saisie par</th>
+														<th>Bénéficiaire</th>
 														<td></td>
                                                     </tr>
                                                 </tfoot>
@@ -509,7 +525,7 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
                             <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="verticalCenterTitle">   Bon approvisionnement de la caisse </h5>
+                                        <h5 class="modal-title" id="verticalCenterTitle">   Bon approvisionnement du coffre </h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
@@ -520,37 +536,44 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
                                             <div class="col-6">
 												<div class="form-group">
                                                 <label class="control-label">Date</label>
-                                                <input type="date" class="form-control" name="date_op" placeholder="date opération" />
+                                                <input type="date" class="form-control" name="date_opc" placeholder="Date" />
                                                 </div>
 											</div>
 											<div class="col-12">
 												<div class="form-group">
-												<label class="control-label">Numéro opération</label>
-												<input type="intval" class="form-control" name="num_op" placeholder="numéro opération" />
+												<label class="control-label">Numéro bon appro</label>
+												<input style="text-transform: uppercase;"  class="form-control" name="num_bon" placeholder="numéro bon" />
+												</div>
+											</div>
+											
+											<div class="col-12">
+												<div class="form-group">
+												<label class="control-label">Désignation </label>
+												<input style="text-transform: uppercase;" class="form-control" value="APPROVISIONNEMENT CAISSE MDI" name="libelle" placeholder="Désignation" />
+												</div>
+											</div>
+                                            <div class="col-12">
+												<div class="form-group">
+												<label class="control-label">solde antérieur</label>
+												<input type="intval" class="form-control" name="solde_ant" value="0" placeholder="solde antérieur" />
 												</div>
 											</div>
 											<div class="col-12">
 												<div class="form-group">
-												<label class="control-label">Numéro pièce</label>
-												<input type="intval" class="form-control" name="num_piece" value="0" placeholder="numéro pièce" />
+												<label class="control-label">Montant demandé </label>
+												<input type="intval" class="form-control"  name="encaissement" placeholder="montant demandé" />
+											</div>
+											</div>
+                                            <div class="form-group">
+                                                    <div class="col-12">
+												<label class="control-label">Bénéficiaire </label>
+												<input style="text-transform: uppercase;"  class="form-control" name="beneficiaire" placeholder="Bénéficiaire" />
 												</div>
-											</div>
-											<div class="col-12">
-												<div class="form-group">
-												<label class="control-label">Libellé encaissement</label>
-												<input type="text" class="form-control" name="libelle" placeholder="libelle encaissement" />
-												</div>
-											</div>
-											<div class="col-12">
-												<div class="form-group">
-												<label class="control-label">Montant </label>
-												<input type="intval" class="form-control"  name="encaissement" placeholder="montant encaissement" />
-											</div>
 											</div>
                                             </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
-                                        <button type="submit" class="btn btn-success" name="btn_enc">Valider</button>
+                                        <button type="submit" class="btn btn-success" name="btn_enc_coffre">Valider</button>
                                     </div>
 								</div>
                                 </div>

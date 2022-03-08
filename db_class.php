@@ -13,6 +13,7 @@
 	return $dbconn;
 	}
 
+	nextval('md_coff_id_caisses_seq'::regclass)
   
 	//Encaissement
 	Function ajout_encaiss($date_op,$num_op,$num_piece,$libelle,$encaissement,$nmois,$id_user){
@@ -29,11 +30,27 @@
 				echo "Données ajoutées !";
 				}
 		}
-		//Lister Encaissement
+		//Appro coffre ---------------------------------------
+	Function ajoute_coffre($date_op,$solde_ant,$num_bon,$libelle,$encaissement,$nmois,$id_user){
+			$libelle= str_replace("'", " ", $libelle);
+			$valide=TRUE;;
+			$sql= "INSERT INTO PUBLIC.md_coffre(date_op,solde_ant,num_bon,libelle,encaissement,nmois,id_user)VALUES
+			('".$date_op."',".$solde_ant.",'".$num_bon."','".$libelle."',".$encaissement.",".$nmois.",".$id_user.")";
+					echo $sql;
+				$conf=config();
+				$result = pg_query($conf, $sql);
+					if(!$result){
+					echo pg_last_error($conf);
+					} else {
+					echo "Données ajoutées !";
+					}
+			}
+			//Lister Encaissement
 	Function afficheEnc($datedeb,$datefin){
 				
 		$sql="SELECT * FROM PUBLIC.md_caisse WHERE date_op BETWEEN '".$datedeb."' AND '".$datefin."' ORDER BY id_caisse ASC";
 		
+		$conf=config();
 		$result = pg_query($conf, $sql);
 		$data = pg_fetch_array($result,NULL);	
 		
@@ -332,7 +349,7 @@
 			AND `login`='".$login."'
 			AND `password`='".$password."'
 			AND `profil`='".$profil."'
-			AND `date_creation`='".$date_creation."'";
+			AND `date_creation`='".date('Y-m-d')."'";
 			
 			$conf=config();
 			$exe=pg_query($conf,$sql);

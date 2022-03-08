@@ -43,7 +43,24 @@
 		}
 		
 	}
-	
+	// Approvisionnement
+	if(isset($_GET['btn_enc_coffre']))
+	   {
+		extract($_GET);
+		$sdmois=explode("-",$_GET['date_opc']);
+		$nmois=($sdmois[0].$sdmois[1]);
+		$valide=TRUE;
+		
+		
+		$ret_val = ajoute_coffre($_GET['date_opc'],$_GET['solde_ant'],$_GET['num_bon'],$_GET['libelle'],$_GET['encaissement'],$nmois,$_GET['id_user']);
+		if($ret_val=1){
+			$dat=$_GET['date_op'];
+		//header('location:tables-coffre.php');
+		}else{
+			echo 'Echec Insertion!';
+		}
+		
+	}
 	// Modification Décaissement
 	if (isset($_POST['btn_encs']))
 	{
