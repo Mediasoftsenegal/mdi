@@ -270,10 +270,7 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
                                                 </thead>
                                                 <tbody>
 												
-                                                    <?
-													
-												
-													
+                                                    <?				
 													if(isset($_POST['search'])){
 														$sql = "SELECT * FROM public.md_coffre WHERE etat=TRUE AND date_op BETWEEN '$dateDeb' AND '$dateFin' ORDER BY  num_bon ASC";
 													} else
@@ -288,92 +285,92 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
 													$debut=$daters[2].'-'.$daters[0].'-'.$daters[1];
 													
 														// Solde ouverture 
-																						
+                                                        		
 														setlocale(LC_TIME, "fr_FR");
+                                                       
 														$jour=strftime("%A", strtotime($debut));
 														//echo 'jour:'.$jour;
 														switch ($jour)
 														{		
-														case 'lundi':
+														    case 'lundi':
 								
-														$vend=date_outil($dateDeb,3);
-														//echo $vend.'<br>';
-														$sql_ranc="SELECT * FROM md_rancoffre WHERE date_ranc='$vend' LIMIT 1";
-														//echo $sql_ran;
-														$conn=config();
-														$resultat=pg_query($conn,$sql_ranc);
-														while($row_r=pg_fetch_array($resultat))
-														{
-															$_SESSION['ranc']=$row_r['montant_ranc'];
-															$solde_ouv=$_SESSION['ranc'];
-															//echo $solde_ouv;
-														}
-														break;		
+														    $vend=date_outil($dateDeb,3);
+														    //echo $vend.'<br>';
+														    $sql_ranc="SELECT * FROM md_rancoffre WHERE date_ranc='$vend' LIMIT 1";
+														    //echo $sql_ran;
+														    $conn=config();
+														    $resultat=pg_query($conn,$sql_ranc);
+														        while($row_r=pg_fetch_array($resultat))
+														        {
+															    $_SESSION['ranc']=$row_r['montant_ranc'];
+														    	$solde_ouv=$_SESSION['ranc'];
+															    //echo $solde_ouv;
+													        	}
+														    break;		
 											
-														default	:
+														    default	:
 									
-														$vend=date_outil($dateDeb,1);
+														    $vend=date_outil($dateDeb,1);
 
-														$sql_ran="SELECT * FROM md_rancoffre order by id_ranc DESC LIMIT 1";
-													//	echo $sql_ran.'<br>';
-														$conn=config();
-														$resultat=pg_query($conn,$sql_ran);
-														while($row_r=pg_fetch_array($resultat))
-														{
-															$_SESSION['ran']=$row_r['montant_ranc'];
-															$solde_ouvc=$_SESSION['ranc'];
-															$date1=explode("/", $_POST['to']);
-															$dateDeb0=$date1[2].'-'.$date1[0].'-'.$date1[1];
-															$_SESSION['dateDeb']=$dateDeb0;
-															$date2=explode("/", $_POST['from']);
-															$datefin1=$date1[2].'-'.$date2[0].'-'.$date2[1];
-															$_SESSION['dateFin']=$datefin1;
+														    $sql_ran="SELECT * FROM md_rancoffre order by id_ranc DESC LIMIT 1";
+													        //	echo $sql_ran.'<br>';
+														    $conn=config();
+														    $resultat=pg_query($conn,$sql_ran);
+														       while($row_r=pg_fetch_array($resultat))
+														        {
+															    $_SESSION['ran']=$row_r['montant_ranc'];
+															    $solde_ouvc=$_SESSION['ranc'];
+															    $date1=explode("/", $_POST['to']);
+															    $dateDeb0=$date1[2].'-'.$date1[0].'-'.$date1[1];
+															    $_SESSION['dateDeb']=$dateDeb0;
+															    $date2=explode("/", $_POST['from']);
+															    $datefin1=$date1[2].'-'.$date2[0].'-'.$date2[1];
+															    $_SESSION['dateFin']=$datefin1;
+														        }
+														        break;							
 														}
-														break;							
-														}
-
-														echo '<tr>';
-														echo '<td></td>';
-														echo '<td></td>';
-														echo '<td></td>';
-														echo '<td>SOLDE D\'OUVERTURE</td>';
-														echo '<td>'.(number_format($solde_ouvc,0,'',' ')).'F CFA </td>';
-														echo '<td></td>';
-														echo '<td></td>';
-														echo '<td></td>';
-														echo '<td></td>';
-														echo '</tr>';
-														$date1=explode("/", $_POST['to']);
-														$dateDeb0=$date1[2].'-'.$date1[0].'-'.$date1[1];
-														$_SESSION['dateDeb']=$dateDeb0;
-														$date2=explode("/", $_POST['from']);
-														$datefin1=$date1[2].'-'.$date2[0].'-'.$date2[1];
-														$_SESSION['dateFin']=$datefin1;
+                                                    
+                                                        echo '<tr>';
+                                                        echo '<td></td>';
+                                                        echo '<td></td>';
+                                                        echo '<td></td>';
+                                                        echo '<td>SOLDE D\'OUVERTURE</td>';
+                                                        echo '<td>'.(number_format($solde_ouvc,0,'',' ')).'F CFA </td>';
+                                                        echo '<td></td>';
+                                                        echo '<td></td>';
+                                                        echo '<td></td>';
+                                                        echo '<td></td>';
+                                                        echo '</tr>';
+                                                        echo date_format($date, 'g:ia \o\n l jS F Y');
+                                                        $date1=explode("/", $_POST['to']);
+                                                        $dateDeb0=$date1[2].'-'.$date1[0].'-'.$date1[1];
+                                                        $_SESSION['dateDeb']=$dateDeb0;
+                                                        $date2=explode("/", $_POST['from']);
+                                                        $datefin1=$date1[2].'-'.$date2[0].'-'.$date2[1];
+                                                        $_SESSION['dateFin']=$datefin1;
 														
-                                                    while ($row = $resultset->fetch(PDO::FETCH_ASSOC))
+                                                        while ($row = $resultset->fetch(PDO::FETCH_ASSOC))
 														{
-														// traitement date
-														$datersd=explode("-", $row['date_op']);
-													
-														$nmoi=lmois($datersd[0]);
-														$Find=$datersd[2].'-'.$nmois.'-'.$datersd[0];
-                                                        $totenc += $row['encaissement'];
-                                                        $totdec += $row['decaissement'];
-														$ncp++;?>
-                                                    <tr>
-														
-                                                        <td><?echo $Find;?></td>
-                                                        <td><?echo $row['num_op'];?></td>
-                                                        <td><?echo $row['num_piece'];?></td>
-                                                        <td><?echo $row['libelle'];?></td>	
-														
-														<? //echo 'Montant ='.$row['encaissement'];
-															if ( $ncp == 1)
+                                                             // traitement date
+														    $datersd=explode("-", $row['date_op']);													
+														    $nmoi=lmois($datersd[0]);
+														    $Find=$datersd[2].'-'.$nmois.'-'.$datersd[0];
+                                                            $totenc += $row['encaissement'];
+                                                            $totdec += $row['decaissement'];
+														    $ncp++;?>   
+                                                        <tr>							
+                                                            <td><?echo $Find;?></td>
+                                                            <td><?echo $row['num_op'];?></td>
+                                                            <td><?echo $row['num_piece'];?></td>
+                                                            <td><?echo $row['libelle'];?></td>
+                                                            
+                                                            <? //echo 'Montant ='.$row['encaissement'];
+																if ( $ncp == 1)
 																{ // 1ere ligne
-																echo '<td>'.(number_format($row['encaissement'],0,'',' ')).'F CFA </td>';
-																echo '<td>'.(number_format($row['decaissement'],0,'',' ')).'F CFA</td>';
+																	echo '<td>'.(number_format($row['encaissement'],0,'',' ')).'F CFA </td>';
+																	echo '<td>'.(number_format($row['decaissement'],0,'',' ')).'F CFA</td>';
 																}
-															else
+																else
 																{ // test encaissement
 																	if($row['encaissement']==0)
 																		{	
@@ -392,46 +389,44 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
 																	echo '<td>'.(number_format($row['decaissement'],0,'',' ')).'F CFA</td>';
 																		}	
 																}
-														?>
-														<? if ($ncp == 1)
-															{ $solde=($solde_ouv+$row['encaissement'])-$row['decaissement']; 
-															//echo 'solde primaire : '.$solde;
-															echo '<td>'.(number_format(($solde_ouv+$row['encaissement'])-$row['decaissement'],0,'',' ')).'F CFA </td>';
-															}
-															else 
-															{
-															 ($solde=($solde+$row['encaissement'])-$row['decaissement']);
-															//	 echo 'Solde secondaire'.$solde;
-															echo '<td>'.(number_format($solde,0,'',' ')).'F CFA </td>';
-															}	
-														require_once 'db_class.php';
-														$per=nom_utilisat($row['id_user']);
-														$rowp = pg_fetch_row($per);
-														echo '<td>'.$rowp[0].'</td>' ?>
-                                                        <td>
-														<? 
+														     
+                                                            if ($ncp == 1)
+															    { $solde=($solde_ouv+$row['encaissement'])-$row['decaissement']; 
+															    //echo 'solde primaire : '.$solde;
+															    echo '<td>'.(number_format(($solde_ouv+$row['encaissement'])-$row['decaissement'],0,'',' ')).'F CFA </td>';
+															    }
+															    else 
+															    {
+															     ($solde=($solde+$row['encaissement'])-$row['decaissement']);
+															    //	 echo 'Solde secondaire'.$solde;
+															    echo '<td>'.(number_format($solde,0,'',' ')).'F CFA </td>';
+															    }	
+														        require_once 'db_class.php';
+														        $per=nom_utilisat($row['id_user']);
+														        $rowp = pg_fetch_row($per);
+														        echo '<td>'.$rowp[0].'</td>'; ?>
+														<td>
+                                                        <? 
 														switch ($_SESSION['Profileur'])
 															{
 															case 'ADMINISTRATEUR':
 															
 															echo '<a href="form_encaisse.php?id='.$row['id_coffre'].'" data-toggle="tooltip" data-placement="right" title="" data-original-title="Modifier une opération" class="btn btn-icon btn-xs btn-outline-success"><i class="fa fa-edit"></i></a>&nbsp;
-														<a href="form_cancel.php?id='.$row['id_coffre'].'" data-toggle="tooltip" data-placement="right" title="" data-original-title="Annuler une opération" class="btn btn-icon btn-xs btn-outline-danger" aria-label=""><i class="fa fa-trash"></i></a>';
+														    <a href="form_cancel.php?id='.$row['id_coffre'].'" data-toggle="tooltip" data-placement="right" title="" data-original-title="Annuler une opération" class="btn btn-icon btn-xs btn-outline-danger" aria-label=""><i class="fa fa-trash"></i></a>';
 														
 															break;
 															default :
-															if($row['cloture'] == FALSE)
-															{
-															echo '<a href="form_encaisse.php?id='.$row['id_caisse'].'" data-toggle="tooltip" data-placement="right" title="" data-original-title="Modifier une opération" class="btn btn-icon btn-xs btn-outline-success"><i class="fa fa-edit"></i></a>&nbsp;
-															<a href="form_cancel.php?id='.$row['id_caisse'].'" data-toggle="tooltip" data-placement="right" title="" data-original-title="Annuler une opération" class="btn btn-icon btn-xs btn-outline-danger"><i class="fa fa-trash"></i></a>';
+															    if($row['cloture'] == FALSE)
+															    {
+															    echo '<a href="form_encaisse.php?id='.$row['id_caisse'].'" data-toggle="tooltip" data-placement="right" title="" data-original-title="Modifier une opération" class="btn btn-icon btn-xs btn-outline-success"><i class="fa fa-edit"></i></a>&nbsp;
+															    <a href="form_cancel.php?id='.$row['id_caisse'].'" data-toggle="tooltip" data-placement="right" title="" data-original-title="Annuler une opération" class="btn btn-icon btn-xs btn-outline-danger"><i class="fa fa-trash"></i></a>';
+															    }
+															    break;
 															}
-															break;
-															}
-													?>
+														?>
 														</td>							
-                                                    </tr>
-													<?php
-                                                    }  
-													?>
+                                                    </tr>        
+													<?} ?>
 													<tr>
 														<td></td>
 														<td></td>
@@ -456,7 +451,7 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
 														<td><? $_SESSION['solde']=($solde_ouv+$totenc-$totdec); ?></td>
 													</tr>
                                                     <?php
-                                                  //$resultset->closeCursor();
+                                                  $resultset->closeCursor();
 													//}
                                                     ?>
                                                 </tbody>
@@ -588,7 +583,7 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
                             <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="verticalCenterTitle">   Fiche Versement </h5>
+                                        <h5 class="modal-title" id="verticalCenterTitle">   Fiche Versement Coffre </h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>

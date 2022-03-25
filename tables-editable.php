@@ -392,7 +392,7 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
 														require_once 'db_class.php';
 														$per=nom_utilisat($row['id_user']);
 														$rowp = pg_fetch_row($per);
-														echo '<td>'.$rowp[0].'</td>' ?>
+														echo '<td>'.$rowp[0].'</td>'; ?>
                                                         <td>
 														<? 
 														switch ($_SESSION['Profileur']){
@@ -413,7 +413,7 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
 														</td>
 														
                                                     </tr>
-													<?php
+													<?
                                                     }
 													?>
 													<tr>
