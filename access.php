@@ -18,7 +18,24 @@ if (isset($valider))
 				//echo 'ID:'.$_SESSION["id_user"] ;
 				$_SESSION["Profileur"] = $user[0]["profil"];
 				//echo 'Profileur:'.$_SESSION["Profileur"] ;
-				header("location:tables-editable.php");
+				switch ($user[0]['profil']) {
+					case 'ADMINISTRATEUR':
+						header("location:tables-editable.php");
+						break;
+					
+					case 'MATIERE':
+						header("location:stock/tab_produit.php");
+						break;
+						
+					case 'RAF':
+						header("location:tables-coffre.php");
+						break;
+
+					case 'COMMERCIAL':
+						header("location:tables-editable.php");
+						break;
+				}
+				
 			} else
 			{
 			

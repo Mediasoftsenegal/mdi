@@ -142,7 +142,7 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
                             </li>
                             <li><a href="tables-editable.php" aria-expanded="false"><i class="nav-icon ti ti-comment"></i><span class="nav-title">Caisse</span></a> </li>
                             <li><a href="tables-coffre.php" aria-expanded="false"><i class="nav-icon ti ti-comment"></i><span class="nav-title">Coffre</span></a> </li>
-                            <li><a class="has-arrow" href="javascript:void(0)" aria-expanded="false"><i class="nav-icon ti ti-calendar"></i><span class="nav-title">Utilisateurs</span></a>    
+                            <li><a class="has-arrow" href="stock/evol_stock.php aria-expanded="false"><i class="nav-icon ti ti-calendar"></i><span class="nav-title">Stock</span></a>    
                             </li>
                             <li>
                              <a class="has-arrow"  href="deconnexion.php" aria-expanded="false"><i class="nav-icon ti ti-key"></i><span class="nav-title">Déconnexion</span></a> 

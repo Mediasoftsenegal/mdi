@@ -55,7 +55,39 @@
 		$ret_val = ajoute_coffre($_GET['date_opc'],$_GET['solde_ant'],$_GET['num_bon'],$_GET['libelle'],$_GET['encaissement'],$nmois,$_GET['id_user']);
 		if($ret_val=1){
 			$dat=$_GET['date_op'];
-		//header('location:tables-coffre.php');
+		header('location:tables-coffre.php');
+		}else{
+			echo 'Echec Insertion!';
+		}
+		
+	}
+	// Produit 
+	if(isset($_GET['btn_produit']))
+	   {
+		extract($_GET);
+		
+		$ret_val = ajoute_produit($_GET['designation']);
+		if($ret_val=1){
+			
+		header('location:tab_produit.php');
+		}else{
+			echo 'Echec Insertion!';
+		}
+		
+	}
+	// Lieu de stockage 
+	
+	if(isset($_GET['btn_lieu']))
+	   {
+		extract($_GET);
+		$id_produit=$_GET['id_produit'];
+		$nomlieu=$_GET['lieu'];
+		$litrecm=$_GET['lcm'];
+		$kgcm=$_GET['kgcm'];
+		
+		$ret_val = ajoute_lieu($id_produit,$nomlieu,$litrecm,$kgcm);
+		if($ret_val=1){
+		header('location:stock/tab_lieu.php');
 		}else{
 			echo 'Echec Insertion!';
 		}
@@ -71,6 +103,26 @@
 			header('location:tables-editable.php');
 		}else{
 			echo 'Echec Modification!';
+		}
+		
+	}
+	// stock
+	
+	if (isset($_GET['btn_stock']))
+	{
+	
+		$id_produit = $_GET['id_produit'];
+		$date = $_GET['date'];
+		$lcm = $_GET['lcm'];
+		$kgcm = $_GET['kgcm'];
+		$id_lieu=$_GET['id_lieu'];
+
+	
+		$guiss=ajout_stock($id_produit,$date,$lcm,$kgcm,$id_lieu);
+		if ($guiss=1){
+			header('location:stock/tab_stock.php');
+		}else{
+			echo 'Echec Insertion!';
 		}
 		
 	}

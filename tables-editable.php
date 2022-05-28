@@ -105,7 +105,7 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
                                                     <h4 class="text-white mb-0"><?echo $bienvenue;?></h4>
                                                     <small class="text-white"></small>
                                                 </div>
-                                                <a href="deconnexion.php" class="text-white font-20 tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Logout"> <i
+                                                <a href="deconnexion.php" class="text-white font-20 tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Logout"> <i 
                                                                 class="zmdi zmdi-power"></i></a>
                                             </div>
                                         </div>
@@ -142,7 +142,8 @@ if ($_SESSION["connecter"] != "Oui") {header("location:auth-login.php");exit();	
                             </li>
                             <li><a href="tables-editable.php" aria-expanded="false"><i class="nav-icon ti ti-comment"></i><span class="nav-title">Caisse</span></a> </li>
                             <li><a href="tables-coffre.php" aria-expanded="false"><i class="nav-icon ti ti-comment"></i><span class="nav-title">Coffre</span></a> </li>
-                            <li><a class="has-arrow" href="javascript:void(0)" aria-expanded="false"><i class="nav-icon ti ti-calendar"></i><span class="nav-title">Utilisateurs</span></a>    
+							<li><a href="stock/tab_produit.php" aria-expanded="false"><i class="nav-icon ti ti-comment"></i><span class="nav-title">Stock</span></a> </li>
+                            <li><a class="has-arrow" href="tab_user.php" aria-expanded="false"><i class="nav-icon ti ti-calendar"></i><span class="nav-title">Utilisateurs</span></a>    
                             </li>
                             <li>
                              <a class="has-arrow"  href="deconnexion.php" aria-expanded="false"><i class="nav-icon ti ti-key"></i><span class="nav-title">Déconnexion</span></a> 

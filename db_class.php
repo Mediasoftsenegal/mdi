@@ -13,7 +13,38 @@
 	return $dbconn;
 	}
 
-	
+	Function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
+	{
+	global $Data;
+	$theValue = function_exists("mysqli_real_escape_string") ? mysqli_real_escape_string($Data, $theValue) : mysql_escape_string($theValue);
+
+  switch ($theType) {
+    case "text":
+      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+      break;    
+    case "long":
+    case "int":
+      $theValue = ($theValue != "") ? intval($theValue) : "NULL";
+      break;
+    case "double":
+      $theValue = ($theValue != "") ? "'" . doubleval($theValue) . "'" : "NULL";
+      break;
+    case "date":
+      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+      break;
+    case "defined":
+      $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
+      break;
+  }
+  return $theValue;
+}
+	//Rechaine
+	Function remchaine($lachaine)
+		{
+			$chaine=str_replace("'","''",$lachaine);
+		
+			return	$chaine;
+		}
   
 	//Encaissement
 	Function ajout_encaiss($date_op,$num_op,$num_piece,$libelle,$encaissement,$nmois,$id_user){
@@ -30,8 +61,47 @@
 				echo "Données ajoutées !";
 				}
 		}
+		// ajout Produit
+		Function ajoute_produit($design)
+		{
+
+			$sql="INSERT INTO PUBLIC.md_produit(designation) VALUES ('".$design."')";
+			
+			$conf=config();
+			$result = pg_query($conf, $sql);
+				if(!$result){
+				echo pg_last_error($conf);
+				} else {
+				echo "Données ajoutées !";
+				}
+		}
+		// ajout Lieu 
+		Function ajoute_lieu($id_produit,$nomlieu,$litrecm,$kgcm)
+		{
+			$sql="INSERT INTO PUBLIC.md_lieu (id_produit,nom_lieu,litre_cm,kg_cm) VALUES (".$id_produit.",'".$nomlieu."',".$litrecm.",".$kgcm.")";
+			
+			$conf=config();
+			$result = pg_query($conf, $sql);
+				if(!$result){
+				echo pg_last_error($conf);
+				} else {
+				echo "Données ajoutées !";
+				}
+		}
+		Function ajout_stock($id_produit,$date,$lcm,$kgcm,$id_lieu)
+	    {
+			$sql="INSERT INTO PUBLIC.md_stock(id_produit,date,mesure_cm,quantite_kg,id_lieu) VALUES (".$id_produit.",'".$date."',".$lcm.",".$kgcm.",".$id_lieu.")";
+			
+			$conf=config();
+			$result =pg_query($conf,$sql);
+			if(!$result){
+				echo pg_last_error($conf);
+			} else {
+				echo "Données ajoutées !";
+			}
+	    }
 		//Appro coffre ---------------------------------------
-	Function ajoute_coffre($date_op,$solde_ant,$num_bon,$libelle,$encaissement,$nmois,$id_user){
+		Function ajoute_coffre($date_op,$solde_ant,$num_bon,$libelle,$encaissement,$nmois,$id_user){
 			$libelle= str_replace("'", " ", $libelle);
 			$valide=TRUE;;
 			$sql= "INSERT INTO PUBLIC.md_coffre(date_op,solde_ant,num_bon,libelle,encaissement,nmois,id_user)VALUES
@@ -46,7 +116,7 @@
 					}
 			}
 			//Lister Encaissement
-	Function afficheEnc($datedeb,$datefin){
+		Function afficheEnc($datedeb,$datefin){
 				
 		$sql="SELECT * FROM PUBLIC.md_caisse WHERE date_op BETWEEN '".$datedeb."' AND '".$datefin."' ORDER BY id_caisse ASC";
 		
@@ -88,11 +158,11 @@
 				} else {
 				echo "Données modifiées !";
 				}
-		}
+			}
 		Function cleanData($val){
 			
 			return pg_escape_string($val);
-		}
+			}
 		//Décaissement
 		Function ajout_decaiss($date_op,$num_op,$num_piece,$libelle,$decaissement,$nmois,$id_user){
 			$libelle= str_replace("'", " ", $libelle);
@@ -108,7 +178,7 @@
 				} else {
 				echo "Données ajoutées !";
 				}
-		}
+			}
 		Function cumul_decaissement($annee)
 			{
 				$sql="SELECT SUM(`decaissement`) AS DEC FROM `md_caisse` WHERE YEAR(`date_op`)='".$annee."'";
@@ -125,7 +195,7 @@
 				$exe=pg_query($conf,$sql);
 				return $exe;
 			}
-		// User 
+			// User 
 		Function xamer($data=array()){
 			
 			$sql="SELECT * FROM PUBLIC.md_user WHERE login='".cleanData($_POST['login'])."' AND mdp='".cleanData($_POST['mdp'])."'";
@@ -136,10 +206,10 @@
 			} else {
 				echo "Authentification réussie !";
 				}
-		}
+			}
 		
 		Function lmois($num)
-		{
+			{
 			switch ($num){
 				case '01' :
 				$mois='Janvier';
@@ -178,8 +248,8 @@
 				$mois='Décembre';
 				break;
 				}
-		return $mois;
-		}	
+			return $mois;
+			}	
 		// Calcul hier
 	Function DatedHier($date='')
 		{
@@ -267,15 +337,15 @@
 				return $ant;
 			}
 		}
-		Function guide_jour(){
+	Function guide_jour(){
 			$hier = new DateTime('-1 day');
   			$hier -> format('Y-m-d');
 		}
 	// REPORT A NOUVEAU	
-		Function report_a_nouveau($nmois)
+	Function report_a_nouveau($nmois)
 			{				
 				$sql="SELECT * FROM public.md_ran WHERE mois= '".$nmois."'";
-				//echo $sql;
+				
 				$conf=config();
 				$exe=pg_query($conf,$sql);
 				if(!$exe){
@@ -283,7 +353,7 @@
 				}
 				return $exe;
 			}		
-		Function insert_ran($date,$mont,$iduser,$mois,$dater)
+	Function insert_ran($date,$mont,$iduser,$mois,$dater)
 			{
 			$sql="INSERT INTO PUBLIC.md_ran (date_ran,montant_ran,id_user,mois,date_reelle) VALUES ('".$date."',".$mont.",".$iduser.",".$mois.",'".$dater."')";
 				
@@ -295,7 +365,7 @@
 				return $exe;
 				
 			}
-		Function verifie_ran($mois,$mont)
+	Function verifie_ran($mois,$mont)
 			{
 				$sql="SELECT * FROM PUBLIC.md_ran WHERE mois='".$mois."' AND montant_ran=".$mont;
 				
@@ -306,7 +376,7 @@
 				} 
 				return $exe;
 			}
-		Function modifie_ran($date,$mont)
+	Function modifie_ran($date,$mont)
 			{	
 			$sql="UPDATE `md_ran` SET `montant_ran` = '".$mont."' WHERE `md_ran`.`date_ran`='".$date."'";
 			
@@ -320,55 +390,55 @@
 		
 	// USERS
 	Function liste_users()
-	{
-		$sql="SELECT * FROM `md_user`";
-			
-		$conf=config();
-		$exe=pg_query($conf,$sql);
-		return $exe;
-	}
+		{
+			$sql="SELECT * FROM `md_user`";
+				
+			$conf=config();
+			$exe=pg_query($conf,$sql);
+			return $exe;
+		}
 			
 	Function insert_users($nomuser,$login,$password,$profil,$date_creation)
-	{
-		$sql = "INSERT INTO `md_user` (`nomuser`, `login`, `password`, `profil`, `date_creation`) 
-				VALUES ('".$nomuser."', '".$login."', '".$password."','".$profil."','".$date_creation."')";
+		{
+			$sql = "INSERT INTO `md_user` (`nomuser`, `login`, `password`, `profil`, `date_creation`) 
+					VALUES ('".$nomuser."', '".$login."', '".$password."','".$profil."','".$date_creation."')";
 
-		$conf=config();
-		$exe=pg_query($conf,$sql);
-		if(!$exe){
-		echo pg_last_error($conf);
-		} 
-		echo "Users ajoutés !";
-		
-	}					
-				
-	Function verifie_user($nomuser,$login,$password,$profil)
-	{
-		$sql="SELECT count(*) as nub FROM `md_user` 
-			WHERE `nomuser`='".$nomuser."'
-			AND `login`='".$login."'
-			AND `password`='".$password."'
-			AND `profil`='".$profil."'
-			AND `date_creation`='".date('Y-m-d')."'";
-			
 			$conf=config();
 			$exe=pg_query($conf,$sql);
 			if(!$exe){
 			echo pg_last_error($conf);
 			} 
-			return $exe;
-	}		
+			echo "Users ajoutés !";
+			
+		}					
+				
+	Function verifie_user($nomuser,$login,$password,$profil)
+		{
+			$sql="SELECT count(*) as nub FROM `md_user` 
+				WHERE `nomuser`='".$nomuser."'
+				AND `login`='".$login."'
+				AND `password`='".$password."'
+				AND `profil`='".$profil."'
+				AND `date_creation`='".date('Y-m-d')."'";
+				
+				$conf=config();
+				$exe=pg_query($conf,$sql);
+				if(!$exe){
+				echo pg_last_error($conf);
+				} 
+				return $exe;
+		}		
 				
 	Function nbre_user()
-	{
-		$sql="SELECT COUNT(*) as nbe FROM `md_user`";
-				
-		$conf=config();
-		$exe=pg_query($conf,$sql);
-		if(!$exe){
-			echo pg_last_error($conf);
-		} 
-		return $exe;
-	}		
+		{
+			$sql="SELECT COUNT(*) as nbe FROM `md_user`";
+					
+			$conf=config();
+			$exe=pg_query($conf,$sql);
+			if(!$exe){
+				echo pg_last_error($conf);
+			} 
+			return $exe;
+		}		
 							
 // ?>
